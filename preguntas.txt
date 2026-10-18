@@ -16,3 +16,9 @@ Paso 4
 
 Verificación: colocando el console.log(puntos), pude verificar las coordenadas de los 3 puntos de vertices
 que coloqué en el mapa.
+
+
+Paso 5
+
+Medidas de la pagina: Área: 385.1 m² y Perímetro: 82.5 m de la cancha de cemento de la UAM.
+Medidas reales: Área: 481 m² y Perímetro: 93 m de la cancha de cemento de la UAM Aproximado.

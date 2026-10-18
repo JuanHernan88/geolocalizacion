@@ -60,4 +60,30 @@ function actualizarBotones() {
     document.getElementById('btnDeshacer').disabled = puntos.length === 0 || poligono !== null;
     document.getElementById('btnExportar').disabled = poligono === null;
 }
+
 console.log(puntos);
+
+function aGeoJSON() {
+ const anillo = puntos.map(([lat, lng]) => [lng, lat]);
+ anillo.push(anillo[0]); // cerrar el anillo
+ return turf.polygon([anillo], { nombre: 'Mi polígono', creado: new
+Date().toISOString() });
+}
+function medir() {
+    const geo = aGeoJSON();
+    const area = turf.area(geo); // metros cuadrados
+    const perimetro = turf.length(turf.polygonToLine(geo), { units: 'meters' });
+    return { area, perimetro };
+}
+
+function cerrarPoligono() {
+    poligono = L.polygon(puntos, { color: '#27ae60', fillOpacity: 0.35 }).addTo(mapa);
+    lineaGuia.setLatLngs([]);
+    mapa.fitBounds(poligono.getBounds());
+    const { area, perimetro } = medir();
+    poligono.bindPopup(`Área: ${area.toFixed(1)} m²<br>Perímetro:${perimetro.toFixed(1)} m`).openPopup();
+    mostrarInfo(`Polígono cerrado. Área: ${area.toFixed(1)} m² (${(area / 10000).toFixed(3)} ha).`);
+    actualizarBotones();
+}
+
+document.getElementById('btnCerrar').addEventListener('click', cerrarPoligono);
