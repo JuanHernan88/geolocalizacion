@@ -110,3 +110,15 @@ function limpiar() {
 
 document.getElementById('btnDeshacer').addEventListener('click', deshacerPunto);
 document.getElementById('btnLimpiar').addEventListener('click', limpiar);
+
+function exportar() {
+    const texto = JSON.stringify(aGeoJSON(), null, 2);
+    const blob = new Blob([texto], { type: 'application/geo+json' });
+    const enlace = document.createElement('a');
+    enlace.href = URL.createObjectURL(blob);
+    enlace.download = 'poligono.geojson';
+    enlace.click();
+    setTimeout(() => URL.revokeObjectURL(enlace.href), 1000);
+}
+
+document.getElementById('btnExportar').addEventListener('click', exportar);

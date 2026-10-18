@@ -22,3 +22,7 @@ Paso 5
 
 Medidas de la pagina: Área: 385.1 m² y Perímetro: 82.5 m de la cancha de cemento de la UAM.
 Medidas reales: Área: 460 m² y Perímetro: 92 m de la cancha de cemento de la UAM Aproximado.
+
+Paso 7
+
+Si sale el mismo poligono que delimitamos y exportamos de la pagina en geojson.io.
