@@ -1,0 +1,13 @@
+Pregunta de control: ¿por qué el <div id="mapa"> necesita una altura? (Sin altura, Leaflet dibuja un
+mapa de 0 px).
+
+R// porque Leaflet necesita conocer el alto del contenedor donde va a dibujar el mapa. Si el elemento 
+mapa tiene una altura de 0 px, el mapa no tendrá espacio visible y no podrá mostrarse correctamente.
+
+
+Discuta por qué en un portátil la precisión puede ser de cientos de metros (se calcula por Wi-Fi o IP, no por GPS)
+
+R// Porque el portatil lo hace por vía wifi, el celular lo calcula por gps por esto tiene más precision
+    como tal.
+
+
