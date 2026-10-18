@@ -40,3 +40,24 @@ function ubicarUsuario() {
 }
 document.getElementById('btnUbicar').addEventListener('click', ubicarUsuario);
 ubicarUsuario();
+
+let puntos = []; // array de [lat, lng]
+let vertices = []; // marcadores visibles de cada vértice
+let poligono = null;
+const lineaGuia = L.polyline([], { color: '#e67e22', dashArray: '6 6' }).addTo(mapa);
+mapa.on('click', (e) => {
+    if (poligono) return; // si ya está cerrado, no se agregan más puntos
+    const { lat, lng } = e.latlng;
+    puntos.push([lat, lng]);
+    const v = L.circleMarker([lat, lng], { radius: 6, color: '#e67e22', fillOpacity: 1}).addTo(mapa);
+    vertices.push(v);
+    lineaGuia.setLatLngs(puntos);
+    actualizarBotones();
+    mostrarInfo(`${puntos.length} vértice(s). Necesitas al menos 3 para cerrar.`);
+});
+function actualizarBotones() {
+    document.getElementById('btnCerrar').disabled = puntos.length < 3 || poligono !== null;
+    document.getElementById('btnDeshacer').disabled = puntos.length === 0 || poligono !== null;
+    document.getElementById('btnExportar').disabled = poligono === null;
+}
+console.log(puntos);

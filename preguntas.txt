@@ -5,9 +5,14 @@ R// porque Leaflet necesita conocer el alto del contenedor donde va a dibujar el
 mapa tiene una altura de 0 px, el mapa no tendrá espacio visible y no podrá mostrarse correctamente.
 
 
+Paso 3
 Discuta por qué en un portátil la precisión puede ser de cientos de metros (se calcula por Wi-Fi o IP, no por GPS)
 
 R// Porque el portatil lo hace por vía wifi, el celular lo calcula por gps por esto tiene más precision
     como tal.
 
 
+Paso 4
+
+Verificación: colocando el console.log(puntos), pude verificar las coordenadas de los 3 puntos de vertices
+que coloqué en el mapa.
