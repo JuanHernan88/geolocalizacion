@@ -87,3 +87,26 @@ function cerrarPoligono() {
 }
 
 document.getElementById('btnCerrar').addEventListener('click', cerrarPoligono);
+
+function deshacerPunto() {
+    puntos.pop();
+    mapa.removeLayer(vertices.pop());
+    lineaGuia.setLatLngs(puntos);
+    actualizarBotones();
+    mostrarInfo(`${puntos.length} vértice(s).`);
+}
+function limpiar() {
+    puntos = [];
+    vertices.forEach((v) => mapa.removeLayer(v));
+    vertices = [];
+    lineaGuia.setLatLngs([]);
+    if (poligono) {
+        mapa.removeLayer(poligono);
+        poligono = null;
+    }
+    actualizarBotones();
+    mostrarInfo('Mapa limpio. Haz clic para empezar de nuevo.');
+}
+
+document.getElementById('btnDeshacer').addEventListener('click', deshacerPunto);
+document.getElementById('btnLimpiar').addEventListener('click', limpiar);
