@@ -1,3 +1,8 @@
+
+Nombres: 
+    Juan Esteban Hernández 
+    Juan Sebastian López
+
 Pregunta de control: ¿por qué el <div id="mapa"> necesita una altura? (Sin altura, Leaflet dibuja un
 mapa de 0 px).
 
@@ -26,3 +31,11 @@ Medidas reales: Área: 460 m² y Perímetro: 92 m de la cancha de cemento de la 
 Paso 7
 
 Si sale el mismo poligono que delimitamos y exportamos de la pagina en geojson.io.
+
+Al probar la pagina en mi celular pude verificar que se tiene más precisión que en el portatil.
+
+
+Reto 7
+
+Se añadio que nos dijera un mensaje si nuestra ubicación estaba dentro del poligono que 
+dibujaramos en el momento.

@@ -76,14 +76,55 @@ function medir() {
     return { area, perimetro };
 }
 
+function verificarUbicacionEnPoligono() {
+    // Comprobar que tenemos la ubicación del usuario
+    if (!marcadorUsuario) {
+        mostrarInfo("Primero debes obtener tu ubicación.");
+        return;
+    }
+
+    // Obtener las coordenadas del marcador
+    const posicion = marcadorUsuario.getLatLng();
+
+    // Turf usa el orden [longitud, latitud]
+    const puntoUsuario = turf.point([
+        posicion.lng,
+        posicion.lat
+    ]);
+
+    // Obtener el polígono en formato GeoJSON
+    const geo = aGeoJSON();
+
+    // Comprobar si el punto está dentro del polígono
+    const dentro = turf.booleanPointInPolygon(
+        puntoUsuario,
+        geo
+    );
+
+    // Mostrar el resultado
+    if (dentro) {
+        mostrarInfo("¡Estás DENTRO del polígono!");
+    } else {
+        mostrarInfo("Estás FUERA del polígono.");
+    }
+
+    // Cambiar el marcador según el resultado
+    marcadorUsuario.setPopupContent(
+        dentro
+            ? "Estás dentro del polígono"
+            : "Estás fuera del polígono"
+    ).openPopup();
+}
+
 function cerrarPoligono() {
-    poligono = L.polygon(puntos, { color: '#27ae60', fillOpacity: 0.35 }).addTo(mapa);
+    poligono = L.polygon(puntos, {color: "#27ae60",fillOpacity: 0.35}).addTo(mapa);
     lineaGuia.setLatLngs([]);
     mapa.fitBounds(poligono.getBounds());
     const { area, perimetro } = medir();
-    poligono.bindPopup(`Área: ${area.toFixed(1)} m²<br>Perímetro:${perimetro.toFixed(1)} m`).openPopup();
-    mostrarInfo(`Polígono cerrado. Área: ${area.toFixed(1)} m² (${(area / 10000).toFixed(3)} ha).`);
+    poligono.bindPopup(`Área: ${area.toFixed(1)} m²<br>Perímetro: ${perimetro.toFixed(1)} m`).openPopup();
+
     actualizarBotones();
+    verificarUbicacionEnPoligono();
 }
 
 document.getElementById('btnCerrar').addEventListener('click', cerrarPoligono);
