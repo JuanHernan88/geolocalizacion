@@ -1,8 +1,8 @@
 const CENTRO_INICIAL = [5.0689, -75.5174]; // Manizales, por si falla la ubicación
 const mapa = L.map('mapa').setView(CENTRO_INICIAL, 15);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ'
 }).addTo(mapa);
 
 let marcadorUsuario = null;
@@ -45,6 +45,7 @@ let puntos = []; // array de [lat, lng]
 let vertices = []; // marcadores visibles de cada vértice
 let poligono = null;
 const lineaGuia = L.polyline([], { color: '#e67e22', dashArray: '6 6' }).addTo(mapa);
+
 mapa.on('click', (e) => {
     if (poligono) return; // si ya está cerrado, no se agregan más puntos
     const { lat, lng } = e.latlng;
@@ -53,22 +54,32 @@ mapa.on('click', (e) => {
     vertices.push(v);
     lineaGuia.setLatLngs(puntos);
     actualizarBotones();
+    actualizarTabla();
     mostrarInfo(`${puntos.length} vértice(s). Necesitas al menos 3 para cerrar.`);
 });
+
 function actualizarBotones() {
     document.getElementById('btnCerrar').disabled = puntos.length < 3 || poligono !== null;
     document.getElementById('btnDeshacer').disabled = puntos.length === 0 || poligono !== null;
     document.getElementById('btnExportar').disabled = poligono === null;
 }
 
-console.log(puntos);
+function actualizarTabla() {
+    const tbody = document.querySelector('#tablaVertices tbody');
+    tbody.innerHTML = '';
+    puntos.forEach(([lat, lng], i) => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `<td>${i + 1}</td><td>${lat.toFixed(6)}</td><td>${lng.toFixed(6)}</td>`;
+        tbody.appendChild(fila);
+    });
+}
 
 function aGeoJSON() {
- const anillo = puntos.map(([lat, lng]) => [lng, lat]);
- anillo.push(anillo[0]); // cerrar el anillo
- return turf.polygon([anillo], { nombre: 'Mi polígono', creado: new
-Date().toISOString() });
+    const anillo = puntos.map(([lat, lng]) => [lng, lat]);
+    anillo.push(anillo[0]); // cerrar el anillo
+    return turf.polygon([anillo], { nombre: 'Mi polígono', creado: new Date().toISOString() });
 }
+
 function medir() {
     const geo = aGeoJSON();
     const area = turf.area(geo); // metros cuadrados
@@ -77,47 +88,28 @@ function medir() {
 }
 
 function verificarUbicacionEnPoligono() {
-    // Comprobar que tenemos la ubicación del usuario
     if (!marcadorUsuario) {
         mostrarInfo("Primero debes obtener tu ubicación.");
         return;
     }
-
-    // Obtener las coordenadas del marcador
     const posicion = marcadorUsuario.getLatLng();
-
-    // Turf usa el orden [longitud, latitud]
-    const puntoUsuario = turf.point([
-        posicion.lng,
-        posicion.lat
-    ]);
-
-    // Obtener el polígono en formato GeoJSON
+    const puntoUsuario = turf.point([posicion.lng, posicion.lat]);
     const geo = aGeoJSON();
+    const dentro = turf.booleanPointInPolygon(puntoUsuario, geo);
 
-    // Comprobar si el punto está dentro del polígono
-    const dentro = turf.booleanPointInPolygon(
-        puntoUsuario,
-        geo
-    );
-
-    // Mostrar el resultado
     if (dentro) {
         mostrarInfo("¡Estás DENTRO del polígono!");
     } else {
         mostrarInfo("Estás FUERA del polígono.");
     }
 
-    // Cambiar el marcador según el resultado
     marcadorUsuario.setPopupContent(
-        dentro
-            ? "Estás dentro del polígono"
-            : "Estás fuera del polígono"
+        dentro ? "Estás dentro del polígono" : "Estás fuera del polígono"
     ).openPopup();
 }
 
 function cerrarPoligono() {
-    poligono = L.polygon(puntos, {color: "#27ae60",fillOpacity: 0.35}).addTo(mapa);
+    poligono = L.polygon(puntos, { color: document.getElementById('colorPoligono').value, fillOpacity: 0.35 }).addTo(mapa);
     lineaGuia.setLatLngs([]);
     mapa.fitBounds(poligono.getBounds());
     const { area, perimetro } = medir();
@@ -134,8 +126,10 @@ function deshacerPunto() {
     mapa.removeLayer(vertices.pop());
     lineaGuia.setLatLngs(puntos);
     actualizarBotones();
+    actualizarTabla();
     mostrarInfo(`${puntos.length} vértice(s).`);
 }
+
 function limpiar() {
     puntos = [];
     vertices.forEach((v) => mapa.removeLayer(v));
@@ -146,6 +140,7 @@ function limpiar() {
         poligono = null;
     }
     actualizarBotones();
+    actualizarTabla();
     mostrarInfo('Mapa limpio. Haz clic para empezar de nuevo.');
 }
 
@@ -163,3 +158,9 @@ function exportar() {
 }
 
 document.getElementById('btnExportar').addEventListener('click', exportar);
+
+document.getElementById('colorPoligono').addEventListener('input', (e) => {
+    if (poligono) {
+        poligono.setStyle({ color: e.target.value });
+    }
+});
