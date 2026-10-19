@@ -34,8 +34,27 @@ Si sale el mismo poligono que delimitamos y exportamos de la pagina en geojson.i
 
 Al probar la pagina en mi celular pude verificar que se tiene más precisión que en el portatil.
 
+Reto 1
+
+Se añadieron las coordenadas de los puntos en pantalla.
+
+Reto 2
+
+Se añadio color a a las areas de los poligonos.
 
 Reto 7
 
 Se añadio que nos dijera un mensaje si nuestra ubicación estaba dentro del poligono que 
 dibujaramos en el momento.
+
+¿qué riesgos de privacidad tiene una página que pide y guarda la ubicación de sus usuarios, 
+y cómo los mitigaría?
+
+Una página que guarda la ubicación tiene muchos riesgos, ya que tiene la ubicación exacta 
+(o aproximada) de la persona. Teniendo la ubicación, gente con malas intenciones podría 
+ubicar la casa de una persona y hacer actos indebidos, o incluso rastrear sus movimientos 
+si la página usa seguimiento en tiempo real. Si esos datos se almacenan sin protección, 
+quedan expuestos ante filtraciones o accesos no autorizados.
+Se puede mitigar pidiendo el permiso solo cuando el usuario hace una acción explícita, 
+no guardando más datos de los necesarios ni por más tiempo del necesario, y protegiendo 
+la información si se llega a almacenar.
